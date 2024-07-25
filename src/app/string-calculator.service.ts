@@ -17,14 +17,17 @@ export class StringCalculatorService {
       delimiter = numbers.substring(2, delimiterEndIndex);
       numbers = numbers.substring(delimiterEndIndex + 1);
     }
-    const delimiters = new RegExp(`[${delimiter}\n]`);
-    const numberArray = numbers.split(delimiters).map((n) => parseInt(n, 10));
+    const delimitersPattern = new RegExp(`[${delimiter}\n,]+`);
+
+    const numberArray = numbers
+      .split(delimitersPattern)
+      .filter((n) => n.trim() !== '') 
+      .map((n) => parseInt(n.trim(), 10));
 
     const negatives = numberArray.filter((n) => n < 0);
     if (negatives.length) {
       throw new Error(`Negative numbers not allowed: ${negatives.join(', ')}`);
     }
-
     return numberArray.reduce((sum, number) => sum + number, 0);
   }
 }
